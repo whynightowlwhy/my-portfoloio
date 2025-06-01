@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(64, 224, 208, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #40e0d0, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s linear infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Project List */
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .project-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 40px rgba(64, 224, 208, 0.2);
+        }
+
+        .project-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(64, 224, 208, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .project-item:hover::before {
+            left: 100%;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #40e0d0;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(64, 224, 208, 0.3);
+        }
+
+        .project-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        /* View Button */
+        .view-btn {
+            background: linear-gradient(45deg, #40e0d0, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(64, 224, 208, 0.3);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(64, 224, 208, 0.4);
+            background: linear-gradient(45deg, #ff6b6b, #40e0d0);
+        }
+
+        .view-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .view-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .view-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Add Project Button */
+        .add-project-btn {
+            width: 100%;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(64, 224, 208, 0.5);
+            border-radius: 15px;
+            color: #40e0d0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-project-btn:hover {
+            background: rgba(64, 224, 208, 0.1);
+            border-color: #40e0d0;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .project-item:nth-child(1) { animation-delay: 0.1s; }
+        .project-item:nth-child(2) { animation-delay: 0.2s; }
+        .project-item:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .project-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .project-name {
+                font-size: 1.5rem;
+            }
+
+            .view-btn {
+                width: 100%;
+            }
+        }
+
+        /* Status indicators */
+        .project-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+        }
+
+        .status-active {
+            background: rgba(64, 224, 208, 0.2);
+            color: #40e0d0;
+        }
+
+        .status-completed {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1 class="page-title">My Projects</h1>
+        
+        <div class="project-list">
+            <div class="project-item fade-in">
+                <div class="project-info">
+                    <h2 class="project-name">Project-1 Google Search</h2>
+                    <p class="project-description">Interactive web application with real-time data visualization and modern UI components.</p>
+                    <span class="project-status status-active">Active</span>
+                </div>
+                <button class="view-btn"><a href="/project/index.html" style="color: #ffffff;" >View</a></button>
+            </div>
+
+             
+        <div class="project-list">
+            <div class="project-item fade-in">
+                <div class="project-info">
+                    <h2 class="project-name">Project-2</h2>
+                    <p class="project-description">Interactive web application with real-time data visualization and modern UI components.</p>
+                    <span class="project-status status-active">Active</span>
+                </div>
+                <button class="view-btn"><a href="/project/index.html" style="color: #ffffff;" >View</a></button>
+            </div>
+
+          
+
+       
+    </div>
+
+    <!-- <script>
+        // Create animated background particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 25;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 6;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = posX + '%';
+                particle.style.top = posY + '%';
+                particle.style.animationDelay = delay + 's';
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Project interaction functions
+        function viewProject(projectId) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            // Button feedback animation
+            btn.style.transform = 'scale(0.95)';
+            btn.textContent = 'Loading...';
+            
+            setTimeout(() => {
+                btn.textContent = 'Opened!';
+                btn.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #40e0d0, #ff6b6b)';
+                    btn.style.transform = 'translateY(-3px)';
+                }, 1500);
+            }, 800);
+            
+            // Simulate project opening
+            console.log(`Opening Project ${projectId}...`);
+            // Here you would typically navigate to the project page
+        }
+
+        function addNewProject() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<span style="font-size: 1.5rem;">⏳</span> Creating...';
+            btn.style.background = 'rgba(64, 224, 208, 0.15)';
+            
+            setTimeout(() => {
+                // Add new project item
+                const projectList = document.querySelector('.project-list');
+                const newProject = document.createElement('div');
+                newProject.className = 'project-item fade-in';
+                newProject.innerHTML = `
+                    <div class="project-info">
+                        <h2 class="project-name">New Project</h2>
+                        <p class="project-description">Freshly created project ready for development and customization.</p>
+                        <span class="project-status status-active">Active</span>
+                    </div>
+                    <button class="view-btn" onclick="viewProject(${Date.now()})">View</button>
+                `;
+                
+                projectList.appendChild(newProject);
+                
+                // Reset button
+                btn.innerHTML = '<span style="font-size: 1.5rem;">✓</span> Project Added!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'rgba(255, 255, 255, 0.05)';
+                }, 2000);
+            }, 1200);
+        }
+
+        // Enhanced hover effects for project items
+        document.addEventListener('DOMContentLoaded', () => {
+            const projectItems = document.querySelectorAll('.project-item');
+            
+            projectItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    item.style.background = 'rgba(64, 224, 208, 0.08)';
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    item.style.background = 'rgba(255, 255, 255, 0.08)';
+                });
+            });
+        });
+
+        // Initialize particles when page loads
+        window.addEventListener('load', createParticles);
+
+        // Add some floating animation to the container
+        const container = document.querySelector('.container');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.01;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.01;
+            
+            container.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+        });
+    </script> -->
+</body>
+</html>
